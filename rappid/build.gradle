@@ -2,32 +2,37 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
-def baseVersion = 0
-def subVersion = 0
-def versionPropsFile = file('version.properties')
-if (versionPropsFile.canRead()) {
-    def Properties versionProps = new Properties()
-    versionProps.load(new FileInputStream(versionPropsFile))
-    baseVersion = versionProps['VERSION_CODE']
-    subVersion = versionProps['VERSION_CODE']
-} else {
-    throw new GradleException("Could not read version.properties!")
+def getBaseVersion() {
+    def versionPropsFile = file('version.properties')
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        return versionProps['VERSION_CODE']
+    } else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
+
+def getVCSVersion() {
+    def projectVersion = 'git rev-list --count HEAD'.execute().text.trim()
+    return projectVersion
 }
 
 ext {
-    version = baseVersion + "." + subVersion
+    baseVersion = getBaseVersion()
+    version = ext.baseVersion + "." + getVCSVersion()
 
     println("version:" + version)
 
     bintrayRepo = 'maven'
-    bintrayName = 'rappid'
+    bintrayName = 'Rappid'
 
     publishedGroupId = 'com.legendmohe.maven'
     libraryName = 'rappid'
     artifact = 'rappid'
 
-//    siteUrl = 'https://github.com/legendmohe/Rappid'
-//    gitUrl = 'https://github.com/legendmohe/Rappid.git'
+    siteUrl = 'https://github.com/legendmohe/Rappid'
+    gitUrl = 'https://github.com/legendmohe/Rappid.git'
 
     libraryDescription = 'For faster android development'
     libraryVersion = version
@@ -48,8 +53,8 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode baseVersion.toInteger()
-        versionName version
+        versionCode = baseVersion
+        versionName = version
     }
     buildTypes {
         release {
@@ -65,7 +70,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.android.support:recyclerview-v7:23.4.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup:otto:1.3.8'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava:1.1.0'

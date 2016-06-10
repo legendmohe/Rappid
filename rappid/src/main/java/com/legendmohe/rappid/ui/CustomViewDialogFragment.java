@@ -30,7 +30,7 @@ public class CustomViewDialogFragment extends BaseDialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateBaseDialog(Bundle savedInstanceState) {
 
         int layoutId = getArguments().getInt(BUNDLE_KEY_RESID);
         String title = getArguments().getString(BUNDLE_KEY_TITLE);

@@ -10,6 +10,8 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.widget.FrameLayout;
 
+import com.legendmohe.rappid.R;
+
 /**
  * Created by legendmohe on 16/4/28.
  */
@@ -28,27 +30,25 @@ public class BottomSheetFragment extends BaseDialogFragment {
         return fragment;
     }
 
-    public void setOnBottomSheetItemClickListener(BottomSheetView.OnBottomSheetItemClickListener listener) {
+    public BottomSheetFragment setOnBottomSheetItemClickListener(BottomSheetView.OnBottomSheetItemClickListener listener) {
         mListener = listener;
+        return this;
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-
+    public Dialog onCreateBaseDialog(Bundle savedInstanceState) {
         int menuResId = getArguments().getInt(BUNDLE_KEY_MENU_RESID);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), getTheme());
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                BottomSheetDialog d = (BottomSheetDialog) dialog;
-
-                FrameLayout bottomSheet = (FrameLayout) d.findViewById(android.support.design.R.id.design_bottom_sheet);
-                BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
         dialog.setContentView(getMenuView(menuResId));
         return dialog;
+    }
+
+    @Override
+    protected void onDialogShow(DialogInterface dialog) {
+        BottomSheetDialog d = (BottomSheetDialog) dialog;
+        FrameLayout bottomSheet = (FrameLayout) d.findViewById(R.id.design_bottom_sheet);
+        BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     @NonNull
@@ -71,6 +71,15 @@ public class BottomSheetFragment extends BaseDialogFragment {
                             return mListener.colorIntForItem(which);
                         } else {
                             return Color.BLACK;
+                        }
+                    }
+
+                    @Override
+                    public String titleForItem(int which) {
+                        if (mListener != null) {
+                            return mListener.titleForItem(which);
+                        } else {
+                            return null;
                         }
                     }
                 });

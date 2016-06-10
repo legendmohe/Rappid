@@ -15,6 +15,10 @@ public class LoadingDialogFragment extends BaseDialogFragment {
     private static final String BUNDLE_KEY_MSG = "BUNDLE_KEY_MSG";
     private static final String BUNDLE_KEY_TITLE = "BUNDLE_KEY_TITLE";
 
+    public static LoadingDialogFragment newInstance() {
+        LoadingDialogFragment fragment = new LoadingDialogFragment();
+        return fragment;
+    }
 
     public static LoadingDialogFragment newInstance(String msg) {
         LoadingDialogFragment fragment = new LoadingDialogFragment();
@@ -35,7 +39,7 @@ public class LoadingDialogFragment extends BaseDialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateBaseDialog(Bundle savedInstanceState) {
 
         String msg = null;
         String title = null;

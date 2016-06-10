@@ -3,12 +3,14 @@ package com.legendmohe.rappid.util;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -20,7 +22,7 @@ import android.widget.Toast;
  */
 public class UIUtil {
     public static ProgressDialog showLoadingIndicator(Context context, String msg, boolean cancelOnTouchOutside, DialogInterface.OnCancelListener cancelListener, DialogInterface.OnShowListener onShowListener, DialogInterface.OnDismissListener dismissListener) {
-        if (!CommonUtil.currentThreadIsMainThread())
+        if (!ThreadUtil.currentThreadIsMainThread())
             throw new IllegalStateException("should show in UI Thread");
 
         ProgressDialog dialog = new ProgressDialog(context); // this = YourActivity
@@ -82,6 +84,25 @@ public class UIUtil {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
     }
 
+    public static float applyDimension(int unit, float value) {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        switch (unit) {
+            case TypedValue.COMPLEX_UNIT_PX:
+                return value;
+            case TypedValue.COMPLEX_UNIT_DIP:
+                return value * metrics.density;
+            case TypedValue.COMPLEX_UNIT_SP:
+                return value * metrics.scaledDensity;
+            case TypedValue.COMPLEX_UNIT_PT:
+                return value * metrics.xdpi * (1.0f / 72);
+            case TypedValue.COMPLEX_UNIT_IN:
+                return value * metrics.xdpi;
+            case TypedValue.COMPLEX_UNIT_MM:
+                return value * metrics.xdpi * (1.0f / 25.4f);
+        }
+        return 0;
+    }
+
     public static int dpToPx(Context context, int dp) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
@@ -105,7 +126,7 @@ public class UIUtil {
 
     //http://stackoverflow.com/questions/2801116/converting-a-view-to-bitmap-without-displaying-it-in-android
     public static Bitmap bitmapForViewWithoutDisplay(View view, boolean fillBackground) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getLayoutParams().width, view.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
         view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
@@ -129,5 +150,18 @@ public class UIUtil {
             return bitmap;
         }
         return null;
+    }
+
+    public static void renderIfNeeded(View renderView, int measureWidth, int measureHeight) {
+        renderView.buildDrawingCache();
+        if (renderView.getDrawingCache() == null) {
+            // measure view first
+            renderView.measure(measureWidth, measureHeight);
+
+            // then layout
+            int width = renderView.getMeasuredWidth();
+            int height = renderView.getMeasuredHeight();
+            renderView.layout(0, 0, width, height);
+        }
     }
 }

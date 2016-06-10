@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 
 import com.legendmohe.rappid.ui.BaseActivity;
-import com.legendmohe.rappid.ui.PromptDialogFragment;
 
 
 /**
@@ -70,10 +69,6 @@ public abstract class MvpBaseAppCompatActivity<T extends MvpBaseActivityPresente
         if (mPresenter != null) {
             mPresenter.onActivityPause();
         }
-    }
-
-    protected void showPromptDialog(String msg) {
-        PromptDialogFragment.newInstance(msg).show(getSupportFragmentManager());
     }
 
     protected abstract T createPresenterInstance();

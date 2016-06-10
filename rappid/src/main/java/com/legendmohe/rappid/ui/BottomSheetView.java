@@ -6,6 +6,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.v7.view.menu.MenuBuilder;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -65,18 +66,18 @@ public class BottomSheetView extends LinearLayout {
         MenuInflater menuInflater = new MenuInflater(getContext());
         Menu menu = new MenuBuilder(getContext());
         menuInflater.inflate(resId, menu);
-        inflaterItems(0, menu);
+        inflaterItems(0, 0, menu);
     }
 
-    private int inflaterItems(int i, Menu menu) {
+    private int inflaterItems(int i, int groupId, Menu menu) {
         for (; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
-            if (item.getGroupId() != 0) {
+            if (item.getGroupId() != 0 && item.getGroupId() != groupId) {
                 if (i != 0) {
                     addView(createSepView());
                 }
                 addView(createItemViewFromMenuItem(item));
-                i = inflaterItems(i + 1, menu);
+                i = inflaterItems(i + 1, item.getGroupId(), menu);
                 if (i < menu.size()) {
                     addView(createSepView());
                 }
@@ -127,9 +128,21 @@ public class BottomSheetView extends LinearLayout {
         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
         textView.setPadding(0, 40, 0, 40);
         if (mListener != null) {
-            textView.setTextColor(mListener.colorIntForItem(finalId));
+            int textColor = mListener.colorIntForItem(finalId);
+            if (textColor <= 0) {
+                textView.setTextColor(Color.BLACK);
+            } else {
+                textView.setTextColor(textColor);
+            }
+
+            String title = mListener.titleForItem(finalId);
+            if (TextUtils.isEmpty(title)) {
+                title = item.getTitle().toString();
+            }
+            textView.setText(title);
         } else {
             textView.setTextColor(Color.BLACK);
+            textView.setText(item.getTitle().toString());
         }
         textView.setOnClickListener(new OnClickListener() {
             @Override
@@ -151,5 +164,22 @@ public class BottomSheetView extends LinearLayout {
 
         @ColorInt
         int colorIntForItem(int which);
+
+        String titleForItem(int which);
+    }
+
+    public abstract static class OnBottomSheetItemClickListenerAdapter implements OnBottomSheetItemClickListener {
+        public abstract void onBottomSheetItemClicked(int which);
+
+        @Override
+        @ColorInt
+        public int colorIntForItem(int which) {
+            return -1;
+        }
+
+        @Override
+        public String titleForItem(int which) {
+            return null;
+        }
     }
 }

@@ -56,11 +56,19 @@ public class ClearableEditText extends EditText implements OnTouchListener, OnFo
     }
 
     public ClearableEditText(Context context) {
-        this(context, null);
+        super(context);
+        init();
     }
 
     public ClearableEditText(Context context, AttributeSet attrs) {
-        this(context, attrs, -1);
+        super(context, attrs);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ClearableEditText,
+                -1, -1);
+
+        mClearIconDrawable = a.getDrawable(R.styleable.ClearableEditText_clearIcon);
+        if (mClearIconDrawable == null)
+            mClearIconDrawable = ContextCompat.getDrawable(getContext(), android.R.color.transparent);
+        init();
     }
 
     public ClearableEditText(Context context, AttributeSet attrs, int defStyle) {
@@ -147,12 +155,6 @@ public class ClearableEditText extends EditText implements OnTouchListener, OnFo
         }
     }
 
-    @Override
-    public void setCompoundDrawables(Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        super.setCompoundDrawables(left, top, right, bottom);
-        initIcon();
-    }
-
     private void init() {
         super.setOnTouchListener(this);
         super.setOnFocusChangeListener(this);
@@ -168,6 +170,9 @@ public class ClearableEditText extends EditText implements OnTouchListener, OnFo
         }
         if (xD == null) {
             xD = mClearIconDrawable;
+        }
+        if (xD == null) {
+            xD = ContextCompat.getDrawable(getContext(), android.R.drawable.ic_input_delete);
         }
         xD.setBounds(0, 0, xD.getIntrinsicWidth(), xD.getIntrinsicHeight());
         int min = getPaddingTop() + xD.getIntrinsicHeight() + getPaddingBottom();

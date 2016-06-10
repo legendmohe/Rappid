@@ -23,7 +23,7 @@ public class CustomLayoutDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateBaseView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         int layoutId = getArguments().getInt(BUNDLE_KEY_RESID);
         View view = inflater.inflate(layoutId, container, false);
         return view;

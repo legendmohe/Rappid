@@ -193,18 +193,18 @@ public class ImageUtil {
         return true;
     }
 
-    public static Bitmap loadBitmapFromFile(String path) {
+    public static Bitmap loadBitmapFromFile(String path, boolean mutable) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inMutable = mutable;
         Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
         return bitmap;
     }
 
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels, int color) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
                 .getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
-        final int color = 0xff424242;
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final RectF rectF = new RectF(rect);

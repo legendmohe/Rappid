@@ -49,7 +49,7 @@ public class InputDialogFragment extends BaseDialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateBaseDialog(Bundle savedInstanceState) {
 
         String hint = getArguments().getString(BUNDLE_KEY_HINT);
         String title = getArguments().getString(BUNDLE_KEY_TITLE);

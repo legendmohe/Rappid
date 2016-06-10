@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import android.view.ViewGroup;
  * Created by legendmohe on 16/4/6.
  */
 public abstract class BaseDialogFragment extends DialogFragment {
-    DialogFragmentListener mDialogFragmentListener;
+    protected DialogFragmentListener mDialogFragmentListener;
 
     public BaseDialogFragment show(FragmentManager manager) {
         return show(manager, true);
@@ -29,23 +30,22 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public BaseDialogFragment show(FragmentManager manager, String tag, boolean dismissPrev) {
 
         if (dismissPrev && manager != null && manager.getFragments() != null && manager.getFragments().size() != 0) {
-            Fragment prev = null;
             for (Fragment current : manager.getFragments()) {
                 if (current == null)
                     continue;
                 if (current == this) {
                     break;
                 } else if (current instanceof DialogFragment) {
-                    prev = current;
+                    DialogFragment df = (DialogFragment) current;
+                    df.dismiss();
                 }
-            }
-            if (prev != null && prev != this) {
-                DialogFragment df = (DialogFragment) prev;
-                df.dismiss();
             }
         }
 
-        super.show(manager, tag);
+//        super.show(manager, tag);
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.add(this, tag);
+        ft.commitAllowingStateLoss();
         return this;
     }
 
@@ -71,6 +71,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
             getDialog().setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
+                    onDialogShow(dialog);
                     if (mDialogFragmentListener != null) {
                         mDialogFragmentListener.onDialogShow(dialog);
                     }
@@ -91,12 +92,17 @@ public abstract class BaseDialogFragment extends DialogFragment {
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
+                onDialogShow(dialog);
                 if (mDialogFragmentListener != null) {
                     mDialogFragmentListener.onDialogShow(dialog);
                 }
             }
         });
         return dialog;
+    }
+
+    protected void onDialogShow(DialogInterface dialog) {
+
     }
 
     public Dialog onCreateBaseDialog(Bundle savedInstanceState) {

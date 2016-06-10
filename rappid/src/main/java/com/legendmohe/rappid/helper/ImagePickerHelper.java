@@ -87,7 +87,7 @@ public class ImagePickerHelper {
                     mSelectedImageView.setImageBitmap(bitmap);
                 }
                 if (mListener != null) {
-                    mListener.onImagePicked(mSelectedImageView, imagePath);
+                    mListener.onImagePicked(mSelectedImageView, imagePath, images.get(0).getThumbnailPath());
                 }
             }
         }
@@ -166,6 +166,14 @@ public class ImagePickerHelper {
         }
     }
 
+    public ImageView getSelectedImageView() {
+        return mSelectedImageView;
+    }
+
+    public void setSelectedImageView(ImageView selectedImageView) {
+        mSelectedImageView = selectedImageView;
+    }
+
     private static class PickerCreator {
 
         private AppCompatActivity mActivity;
@@ -212,7 +220,7 @@ public class ImagePickerHelper {
 
 
     public interface ImagePickerHelperListener {
-        void onImagePicked(ImageView selectedImageView, String imagePath);
+        void onImagePicked(ImageView selectedImageView, String imagePath, String thumbnailPath);
 
         void onUserDeniedPermission();
     }

@@ -3,15 +3,16 @@ package com.legendmohe.rappid.mvp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.legendmohe.rappid.ui.BaseFragment;
+
 /**
  * Created by legendmohe on 16/4/5.
  */
-public abstract class MvpBaseFragment<T extends MvpBaseFragmentPresenter<? extends MvpBaseView>> extends Fragment {
+public abstract class MvpBaseFragment<T extends MvpBaseFragmentPresenter<? extends MvpBaseView>> extends BaseFragment {
 
     protected T mPresenter;
 
@@ -27,6 +28,7 @@ public abstract class MvpBaseFragment<T extends MvpBaseFragmentPresenter<? exten
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mPresenter = this.createPresenterInstance();
         if (mPresenter != null) {
             mPresenter.onFragmentAttached(context);
         }
@@ -57,7 +59,6 @@ public abstract class MvpBaseFragment<T extends MvpBaseFragmentPresenter<? exten
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = this.createPresenterInstance();
         mPresenter.onFragmentCreate();
     }
 

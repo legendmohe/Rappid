@@ -1,9 +1,8 @@
 package com.legendmohe.rappid.util;
 
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.os.Looper;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -24,28 +23,6 @@ public class CommonUtil {
 
     public static boolean isEmpty(WeakReference weakReference) {
         return !(weakReference != null && weakReference.get() != null);
-    }
-
-    public static void delay(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean currentThreadIsMainThread() {
-        return Looper.myLooper() == Looper.getMainLooper();
-    }
-
-    public static boolean isRunningBackground(Context context) {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-        String currentPackageName = cn.getPackageName();
-        if (currentPackageName != null && currentPackageName.equals(context.getPackageName())) {
-            return false;
-        }
-        return true;
     }
 
     public static boolean validateEmail(String email) {
@@ -102,5 +79,43 @@ public class CommonUtil {
             }
         }
         return null;
+    }
+
+    public static boolean isTheSame(short[] array1, short[] array2) {
+        if (array1 == null && array2 == null)
+            return true;
+        if (array1 == null) {
+            array1 = array2;
+            array2 = null;
+        }
+        if (array2 == null)
+            return false;
+        if (array1.length != array2.length) {
+            return false;
+        }
+        for (int i = 0; i < array1.length; i++) {
+            if (array1[i] != array2[2])
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean hasPermissionInManifest(Context context, String permissionName) {
+        final String packageName = context.getPackageName();
+        try {
+            final PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+            final String[] declaredPermisisons = packageInfo.requestedPermissions;
+            if (declaredPermisisons != null && declaredPermisisons.length > 0) {
+                for (String p : declaredPermisisons) {
+                    if (p.equals(permissionName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+        return false;
     }
 }

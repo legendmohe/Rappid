@@ -3,24 +3,15 @@ package com.legendmohe.rappid.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity {
 
+    private static DialogProvider sDialogProvider = new DefaultDialogProvider();
+
     private BaseDialogFragment mLoadingDialog;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -56,12 +47,47 @@ public class BaseActivity extends AppCompatActivity {
         return this;
     }
 
-    public void showLoadingDialog(String msg) {
-        mLoadingDialog = LoadingDialogFragment.newInstance(msg).show(getSupportFragmentManager());
+    public static void setDialogProvider(DialogProvider dialogProvider) {
+        BaseActivity.sDialogProvider = dialogProvider;
     }
 
-    public void hideLoadingDialog() {
-        mLoadingDialog.dismiss();
+    public static DialogProvider getDialogProvider() {
+        return sDialogProvider;
+    }
+
+    public BaseDialogFragment showLoadingDialog(String msg) {
+        if (sDialogProvider != null) {
+            mLoadingDialog = sDialogProvider.provideLoadingDialogFragment(msg).show(getSupportFragmentManager());
+            return mLoadingDialog;
+        }
+        return null;
+    }
+
+    public void dismissLoadingDialog() {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+    }
+
+    public BaseDialogFragment showPromptDialog(String title, String msg, String buttonTitle) {
+        if (sDialogProvider != null) {
+            return sDialogProvider.providePromptDialogFragment(title, msg, buttonTitle).show(getSupportFragmentManager());
+        }
+        return null;
+    }
+
+    public BaseDialogFragment showPromptDialog(String title, String msg) {
+        if (sDialogProvider != null) {
+            return sDialogProvider.providePromptDialogFragment(title, msg).show(getSupportFragmentManager());
+        }
+        return null;
+    }
+
+    public BaseDialogFragment showPromptDialog(String msg) {
+        if (sDialogProvider != null) {
+            return sDialogProvider.providePromptDialogFragment(msg).show(getSupportFragmentManager());
+        }
+        return null;
     }
 
     public void showShortToast(String msg) {

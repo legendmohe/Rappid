@@ -37,7 +37,7 @@ public class ConfirmDialogFragment extends BaseDialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateBaseDialog(Bundle savedInstanceState) {
 
         String msg = getArguments().getString(BUNDLE_KEY_MSG);
         String title = getArguments().getString(BUNDLE_KEY_TITLE);

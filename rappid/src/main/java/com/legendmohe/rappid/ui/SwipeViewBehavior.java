@@ -158,7 +158,7 @@ public class SwipeViewBehavior<V extends View> extends CoordinatorLayout.Behavio
         }
         if (mViewDragHelper != null) {
             mViewDragHelper.processTouchEvent(event);
-            return true;
+            return mEnable;
         }
         return false;
     }
@@ -388,6 +388,9 @@ public class SwipeViewBehavior<V extends View> extends CoordinatorLayout.Behavio
         return mViewDragHelper != null ? mViewDragHelper.getViewDragState() : STATE_IDLE;
     }
 
+    public ClampState getClampState() {
+        return mClampState;
+    }
 
     public void setClampState(ClampState targetState) {
         if (targetState == mClampState)

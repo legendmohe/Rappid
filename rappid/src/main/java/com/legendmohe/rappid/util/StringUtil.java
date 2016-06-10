@@ -1,6 +1,9 @@
 package com.legendmohe.rappid.util;
 
+import android.text.TextUtils;
+
 import java.security.MessageDigest;
+import java.util.Collection;
 
 /**
  * Created by legendmohe on 16/5/20.
@@ -40,7 +43,26 @@ public class StringUtil {
         appendIfNotEmpty(sb, target, null);
     }
 
+    public static String joinStrings(String sep, Collection<String> strings) {
+        if (CommonUtil.isEmpty(strings))
+            return "";
+        StringBuilder sb = new StringBuilder();
+        for (String item :
+                strings) {
+            if (item != null && item.length() != 0) {
+                sb.append(item);
+                sb.append(sep);
+            }
+        }
+        if (sb.length() != 0) {
+            sb.delete(sb.length() - sep.length(), sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
     public static String joinStrings(String sep, String... strings) {
+        if (CommonUtil.isEmpty(strings))
+            return "";
         StringBuilder sb = new StringBuilder();
         for (String item :
                 strings) {
@@ -80,5 +102,14 @@ public class StringUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String chooseNotNull(String... strings) {
+        for (String curString :
+                strings) {
+            if (!TextUtils.isEmpty(curString))
+                return curString;
+        }
+        return "";
     }
 }
