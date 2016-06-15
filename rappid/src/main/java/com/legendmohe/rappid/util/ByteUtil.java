@@ -28,7 +28,7 @@ public class ByteUtil {
      *
      * @param bytes
      * @return convert result
-     * <p/>
+     *
      * http://stackoverflow.com/questions/9655181/how-to-convert-a-byte-array-to-a-hex-string-in-java
      */
     public static String bytesToHexWithSeperator(byte[] bytes) {
@@ -45,7 +45,7 @@ public class ByteUtil {
     /**
      * 将一个4byte的数组转换成32位的int
      *
-     * @param buf bytes buffer
+     * @param buf            bytes buffer
      * @param pos 中开始转换的位置
      * @return convert result
      */

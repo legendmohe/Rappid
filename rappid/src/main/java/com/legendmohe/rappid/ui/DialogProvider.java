@@ -1,24 +1,28 @@
 package com.legendmohe.rappid.ui;
 
+import android.view.View;
+
 /**
  * Created by legendmohe on 16/5/29.
  */
 public interface DialogProvider {
-    BaseDialogFragment provideLoadingDialogFragment();
+    BaseDialogFragment createLoadingDialogFragment();
 
-    BaseDialogFragment provideLoadingDialogFragment(String msg);
+    BaseDialogFragment createLoadingDialogFragment(String msg);
 
-    BaseDialogFragment provideLoadingDialogFragment(String title, String msg);
+    BaseDialogFragment createLoadingDialogFragment(String title, String msg);
 
-    BaseDialogFragment providePromptDialogFragment(String msg);
+    BaseDialogFragment createPromptDialogFragment(String msg);
 
-    BaseDialogFragment providePromptDialogFragment(String title, String msg);
+    BaseDialogFragment createPromptDialogFragment(String title, String msg);
 
-    BaseDialogFragment providePromptDialogFragment(String title, String msg, String buttonTitle);
+    BaseDialogFragment createPromptDialogFragment(String title, String msg, String buttonTitle);
 
-    BaseDialogFragment provideConfirmDialogFragment(String msg);
+    BaseDialogFragment createConfirmDialogFragment(String msg);
 
-    BaseDialogFragment provideConfirmDialogFragment(String title, String msg);
+    BaseDialogFragment createConfirmDialogFragment(String title, String msg);
 
-    BaseDialogFragment provideConfirmDialogFragment(String title, String msg, String buttonTitle);
+    BaseDialogFragment createConfirmDialogFragment(String title, String msg, String buttonTitle);
+
+    View createToastView(BaseActivity activity, String msg);
 }

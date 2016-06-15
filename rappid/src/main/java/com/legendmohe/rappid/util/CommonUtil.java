@@ -3,8 +3,15 @@ package com.legendmohe.rappid.util;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.view.Window;
+import android.view.WindowManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,7 +88,7 @@ public class CommonUtil {
         return null;
     }
 
-    public static boolean isTheSame(short[] array1, short[] array2) {
+    public static boolean equals(short[] array1, short[] array2) {
         if (array1 == null && array2 == null)
             return true;
         if (array1 == null) {
@@ -117,5 +124,100 @@ public class CommonUtil {
 
         }
         return false;
+    }
+
+    public static boolean setMiuiStatusBarDarkMode(Window window, boolean darkmode) {
+        Class<? extends Window> clazz = window.getClass();
+        try {
+            int darkModeFlag = 0;
+            Class<?> layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
+            Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
+            darkModeFlag = field.getInt(layoutParams);
+            Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
+            extraFlagField.invoke(window, darkmode ? darkModeFlag : 0, darkModeFlag);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean setMeizuStatusBarDarkIcon(Window window, boolean dark) {
+        boolean result = false;
+        if (window != null) {
+            try {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                Field darkFlag = WindowManager.LayoutParams.class
+                        .getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
+                Field meizuFlags = WindowManager.LayoutParams.class
+                        .getDeclaredField("meizuFlags");
+                darkFlag.setAccessible(true);
+                meizuFlags.setAccessible(true);
+                int bit = darkFlag.getInt(null);
+                int value = meizuFlags.getInt(lp);
+                if (dark) {
+                    value |= bit;
+                } else {
+                    value &= ~bit;
+                }
+                meizuFlags.setInt(lp, value);
+                window.setAttributes(lp);
+                result = true;
+            } catch (Exception e) {
+            }
+        }
+        return result;
+    }
+
+    public static String getSystemProperty(String propName) {
+        String line;
+        BufferedReader input = null;
+        try {
+            Process p = Runtime.getRuntime().exec("getprop " + propName);
+            input = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()), 1024);
+            line = input.readLine();
+            input.close();
+        } catch (IOException ignore) {
+            return null;
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+        return line;
+    }
+
+    public static String dumpDeviceRomInfo() {
+        String handSetInfo = "MODEL:" + android.os.Build.MODEL
+                + "\nRELEASE:" + android.os.Build.VERSION.RELEASE
+                + "\nPRODUCT:" + android.os.Build.PRODUCT
+                + "\nDISPLAY:" + android.os.Build.DISPLAY
+                + "\nBRAND:" + android.os.Build.BRAND
+                + "\nDEVICE:" + android.os.Build.DEVICE
+                + "\nCODENAME:" + android.os.Build.VERSION.CODENAME
+                + "\nSDK_INT:" + android.os.Build.VERSION.SDK_INT
+                + "\nCPU_ABI:" + android.os.Build.CPU_ABI
+                + "\nHARDWARE:" + android.os.Build.HARDWARE
+                + "\nHOST:" + android.os.Build.HOST
+                + "\nID:" + android.os.Build.ID
+                + "\nMANUFACTURER:" + android.os.Build.MANUFACTURER // 这行返回的是rom定制商的名称
+                ;
+        return handSetInfo;
+    }
+
+    public static String getRomManufacturer() {
+        return android.os.Build.MANUFACTURER;
+    }
+
+    public static boolean isXiaomiRom() {
+        return getRomManufacturer().equalsIgnoreCase("xiaomi");
+    }
+
+    public static boolean isMeizuRom() {
+        return getRomManufacturer().equalsIgnoreCase("meizu"); // TODO - check this!
     }
 }

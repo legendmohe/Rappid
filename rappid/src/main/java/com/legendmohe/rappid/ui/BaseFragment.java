@@ -33,12 +33,12 @@ public class BaseFragment extends Fragment {
     }
 
     public void startActivity(Class<?> activityClass) {
-        Intent localIntent = new Intent(getContext(), activityClass);
+        Intent localIntent = new Intent(getBaseActivity(), activityClass);
         startActivity(localIntent);
     }
 
     public void startActivity(Class<?> activityClass, Bundle data) {
-        Intent localIntent = new Intent(getContext(), activityClass);
+        Intent localIntent = new Intent(getBaseActivity(), activityClass);
         localIntent.putExtras(data);
         startActivity(localIntent);
     }

@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -162,6 +163,15 @@ public class UIUtil {
             int width = renderView.getMeasuredWidth();
             int height = renderView.getMeasuredHeight();
             renderView.layout(0, 0, width, height);
+        }
+    }
+
+    public static void setAllParentsClip(View v, boolean enabled) {
+        while (v.getParent() != null && v.getParent() instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) v.getParent();
+            viewGroup.setClipChildren(enabled);
+            viewGroup.setClipToPadding(enabled);
+            v = viewGroup;
         }
     }
 }
