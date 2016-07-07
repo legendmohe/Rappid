@@ -16,7 +16,7 @@ public class RxEnumEventResolver implements RxEventHandler.SubscriptionResolver 
     }
 
     @Override
-    public Class resolveSubscribedClassFromSourceEvent(Object rawEvent) {
+    public Class resolveSubscriptionClassFromSourceEvent(Object rawEvent) {
         if (!rawEvent.getClass().equals(RxEvent.EnumEvent.class))
             return null;
         return ((RxEvent.EnumEvent) rawEvent).type.getClass();

@@ -112,15 +112,7 @@ public abstract class DataManager<K, V> {
 
     public void removeItem(V item) {
         if (item != null) {
-            mDataMap.remove(getIdFromItem(item));
-            notiBindedAdapterItemRemove(item);
-
-            if (mNotifyThreadHandler != null) {
-                Message msg = Message.obtain();
-                msg.what = MSG_ITEM_REMOVE;
-                msg.obj = item;
-                mNotifyThreadHandler.sendMessage(msg);
-            }
+            removeItemById(getIdFromItem(item));
         }
     }
 
@@ -208,6 +200,10 @@ public abstract class DataManager<K, V> {
 
     public V getItem(K itemId) {
         return mDataMap.get(itemId);
+    }
+
+    public int size() {
+        return size();
     }
 
     public void registerDataObserver(DataObserver<V> observer) {

@@ -43,9 +43,14 @@ public abstract class BaseDialogFragment extends DialogFragment {
         }
 
 //        super.show(manager, tag);
-        FragmentTransaction ft = manager.beginTransaction();
-        ft.add(this, tag);
-        ft.commitAllowingStateLoss();
+        if (getActivity() != null && getActivity().isDestroyed()) {
+            return this;
+        }
+        if (!this.isAdded()) {
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.add(this, tag);
+            ft.commitAllowingStateLoss();
+        }
         return this;
     }
 

@@ -3,16 +3,21 @@ package com.legendmohe.rappid.util;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Window;
 import android.view.WindowManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,7 +106,7 @@ public class CommonUtil {
             return false;
         }
         for (int i = 0; i < array1.length; i++) {
-            if (array1[i] != array2[2])
+            if (array1[i] != array2[i])
                 return false;
         }
         return true;
@@ -219,5 +224,32 @@ public class CommonUtil {
 
     public static boolean isMeizuRom() {
         return getRomManufacturer().equalsIgnoreCase("meizu"); // TODO - check this!
+    }
+
+    public static Bundle bundleForPair(String key, Object value) {
+        Bundle data = new Bundle();
+        if (value instanceof String) {
+            data.putString(key, (String) value);
+        } else if (value instanceof Integer) {
+            data.putInt(key, (Integer) value);
+        } else if (value instanceof byte[]) {
+            data.putByteArray(key, (byte[]) value);
+        } else if (value instanceof Parcelable) {
+            data.putParcelable(key, (Parcelable) value);
+        } else if (value instanceof Serializable) {
+            data.putSerializable(key, (Serializable) value);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return data;
+    }
+
+    public static <T> List<T> toList(T[] objects) {
+        List<T> result = new ArrayList<>();
+        for (T t :
+                objects) {
+            result.add(t);
+        }
+        return result;
     }
 }

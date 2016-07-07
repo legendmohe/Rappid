@@ -62,23 +62,50 @@ public class StateMachine {
         }
     }
 
-    public void start(State initState) {
+    public void startSync(State initState) {
         synchronized (this) {
             mInitState = initState;
-            for (State state : mStates) {
-                state.onStart();
-            }
+            mInitState.onStart();
             mCurrentState = mInitState;
         }
     }
 
-    public void start() {
+    public void startSync() {
+        if (mInitState == null)
+            return;
+
         synchronized (this) {
-            for (State state : mStates) {
-                state.onStart();
-            }
+            mInitState.onStart();
             mCurrentState = mInitState;
         }
+    }
+
+    public void start(State initState) {
+        mInitState = initState;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (mHandleLock) {
+                    mInitState.onStart();
+                    mCurrentState = mInitState;
+                }
+            }
+        });
+    }
+
+    public void start() {
+        if (mInitState == null)
+            return;
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (mHandleLock) {
+                    mInitState.onStart();
+                    mCurrentState = mInitState;
+                }
+            }
+        });
     }
 
     public void stop(int cause) {
@@ -121,6 +148,24 @@ public class StateMachine {
                 }
             }
         });
+    }
+
+    public void postEventSync(Enum<?> event) {
+        postEventSync(event, null);
+    }
+
+    public void postEventSync(final Enum<?> event, final Object data) {
+        synchronized (mHandleLock) {
+            State nextState = mCurrentState.mToStates.get(event);
+            if (nextState == null) {
+                mCurrentState.onUnhandleEvent(event, data);
+                return;
+            }
+            State oldCurrentState = mCurrentState;
+            mCurrentState.onLeave(nextState, event, data);
+            mCurrentState = nextState;
+            nextState.onEnter(oldCurrentState, event, data);
+        }
     }
 
     public boolean canMoveTo(State toState) {

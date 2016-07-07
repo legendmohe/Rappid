@@ -1,7 +1,6 @@
 package com.legendmohe.rappid.mvp;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 
 import com.legendmohe.rappid.ui.BaseActivity;
 
@@ -16,13 +15,6 @@ public abstract class MvpBaseAppCompatActivity<T extends MvpBaseActivityPresente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = this.createPresenterInstance();
-        mPresenter.onActivityCreate();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
         mPresenter = this.createPresenterInstance();
         mPresenter.onActivityCreate();
     }

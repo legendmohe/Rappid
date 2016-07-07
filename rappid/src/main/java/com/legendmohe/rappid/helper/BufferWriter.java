@@ -9,29 +9,28 @@ import com.legendmohe.rappid.util.ByteUtil;
  * @2015年1月14日上午11:51:58 </br>
  * @explain
  */
-public class BufferWritter {
-    // 当前的数据
-    private byte[] buf;
-    // 当前写入的索引
-    private int index;
+public class BufferWriter {
+
+    private byte[] mBuf;
+    private int mIndex;
 
     /**
      * @param size 需要写入多大数据
      */
-    public BufferWritter(int size) {
-        buf = new byte[size];
-        index = 0;
+    public BufferWriter(int size) {
+        mBuf = new byte[size];
+        mIndex = 0;
     }
 
     public void addSize(int size) {
-        byte[] addbyte = new byte[buf.length + size];
-        System.arraycopy(buf, 0, addbyte, 0, buf.length);
-        buf = addbyte;
+        byte[] addbyte = new byte[mBuf.length + size];
+        System.arraycopy(mBuf, 0, addbyte, 0, mBuf.length);
+        mBuf = addbyte;
     }
 
 
     public int size() {
-        return buf.length;
+        return mBuf.length;
     }
 
     /**
@@ -59,13 +58,13 @@ public class BufferWritter {
      * @return
      */
     public byte[] toBytes() {
-        byte[] bytes = new byte[buf.length];
-        System.arraycopy(buf, 0, bytes, 0, buf.length);
+        byte[] bytes = new byte[mBuf.length];
+        System.arraycopy(mBuf, 0, bytes, 0, mBuf.length);
         return bytes;
     }
 
-    public byte getIndex(int i) {
-        return buf[i];
+    public byte byteAtIndex(int i) {
+        return mBuf[i];
     }
 
     /**
@@ -85,14 +84,14 @@ public class BufferWritter {
      */
     public void writeBytes(byte[] data) {
         int len = data.length;
-        System.arraycopy(data, 0, buf, index, len);
-        index += len;
+        System.arraycopy(data, 0, mBuf, mIndex, len);
+        mIndex += len;
     }
 
-    public void writeBytes(BufferWritter data) {
+    public void writeBytes(BufferWriter data) {
         int len = data.size();
-        System.arraycopy(data.buf, 0, buf, index, len);
-        index += len;
+        System.arraycopy(data.mBuf, 0, mBuf, mIndex, len);
+        mIndex += len;
     }
 
     /**
@@ -101,8 +100,7 @@ public class BufferWritter {
      * @return
      */
     public int getIndex() {
-        return index;
-
+        return mIndex;
     }
 
     /**
@@ -128,19 +126,27 @@ public class BufferWritter {
     }
 
     public void writeByte(byte b) {
-        buf[index] = b;
-        index++;
+        mBuf[mIndex] = b;
+        mIndex++;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[ ");
-        for (int i = 0; i < buf.length; i++) {
-            builder.append(ByteUtil.byteToHex(buf[i]));
+        for (int i = 0; i < mBuf.length; i++) {
+            builder.append(ByteUtil.byteToHex(mBuf[i]));
             builder.append(" ");
         }
         builder.append(" ]");
         return builder.toString();
+    }
+
+    public boolean reachEnd() {
+        return mIndex >= mBuf.length;
+    }
+
+    public int numberOfSlot() {
+        return mBuf.length - mIndex;
     }
 }

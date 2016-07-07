@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.support.v4.graphics.BitmapCompat;
 import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
@@ -219,5 +220,9 @@ public class ImageUtil {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         return output;
+    }
+
+    public static int sizeOf(Bitmap bitmap) {
+        return BitmapCompat.getAllocationByteCount(bitmap);
     }
 }

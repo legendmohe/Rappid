@@ -15,7 +15,7 @@ public class RxDefaultEventResolver implements RxEventHandler.SubscriptionResolv
     }
 
     @Override
-    public Class resolveSubscribedClassFromSourceEvent(Object rawEvent) {
+    public Class resolveSubscriptionClassFromSourceEvent(Object rawEvent) {
         return rawEvent.getClass();
     }
 

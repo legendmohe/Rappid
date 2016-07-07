@@ -19,6 +19,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by legendmohe on 15/3/8.
@@ -80,14 +83,20 @@ public class PrefUtil {
     }
 
     public synchronized static void clear(Context context, Class constantClass, String prefix) {
+        clear(context, constantClass, prefix, new String[]{});
+    }
+
+    public synchronized static void clear(Context context, Class constantClass, String prefix, String[] excepts) {
         Field[] fields = constantClass.getDeclaredFields();
         if (fields == null || fields.length == 0)
             return;
 
+        Set<String> exceptions = new HashSet<>(Arrays.asList(excepts));
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor prefEditor = sharedPreferences.edit();
         for (Field field : fields) {
-            if (field.getName().startsWith(prefix) && field.getType().equals(String.class)) {
+            if (field.getName().startsWith(prefix) && !exceptions.contains(field.getName()) && field.getType().equals(String.class)) {
                 try {
                     prefEditor.remove((String) field.get(context));
                 } catch (IllegalAccessException e) {

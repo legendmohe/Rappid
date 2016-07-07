@@ -32,6 +32,7 @@ public class RxBus {
     }
 
     public void register(Object host) {
+        // default event resolver
         register(host, new RxEnumEventResolver());
     }
 

@@ -12,6 +12,13 @@ public class RxEvent {
         return enumEvent;
     }
 
+    public static EnumEvent createEnumEvent(Enum type) {
+        EnumEvent enumEvent = new EnumEvent();
+        enumEvent.type = type;
+        enumEvent.data = null;
+        return enumEvent;
+    }
+
     public static class EnumEvent {
         Enum type;
         Object data;

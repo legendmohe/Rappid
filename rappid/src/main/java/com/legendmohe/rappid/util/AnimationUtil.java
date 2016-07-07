@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
+import android.widget.ImageView;
 
 /**
  * Created by legendmohe on 16/5/24.
@@ -100,6 +102,15 @@ public class AnimationUtil {
         // 1dp/ms
         a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
+    }
+
+    public static void enableAnimationInImageView(ImageView imageView, boolean enable) {
+        if (imageView.getDrawable() instanceof AnimationDrawable) {
+            if (enable)
+                ((AnimationDrawable) imageView.getDrawable()).start();
+            else
+                ((AnimationDrawable) imageView.getDrawable()).stop();
+        }
     }
 
     public static ValueAnimator animateColorChange(

@@ -127,7 +127,7 @@ public class RxEventHandler extends Subscriber<Object> {
         if (mHost == null || mHost.get() == null)
             return;
 
-        Class eventClass = mResolver.resolveSubscribedClassFromSourceEvent(o);
+        Class eventClass = mResolver.resolveSubscriptionClassFromSourceEvent(o);
         if (eventClass != null && mEventMap.containsKey(eventClass)) {
             Set<Subscription> subscriptions = mEventMap.get(eventClass);
             for (Subscription wrapper :
@@ -156,7 +156,7 @@ public class RxEventHandler extends Subscriber<Object> {
 
         void invokeSubscribeMethod(Object host, Method method, Object event) throws InvocationTargetException, IllegalAccessException;
 
-        Class resolveSubscribedClassFromSourceEvent(Object rawEvent);
+        Class resolveSubscriptionClassFromSourceEvent(Object rawEvent);
 
         Class<? extends Annotation> resolveAnnotationClass();
 

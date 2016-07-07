@@ -126,10 +126,10 @@ public class BottomSheetView extends LinearLayout {
         textView.setLayoutParams(layoutParams);
         textView.setText(item.getTitle());
         textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-        textView.setPadding(0, 40, 0, 40);
+        textView.setPadding(0, UIUtil.dpToPx(getContext(), 22), 0, UIUtil.dpToPx(getContext(), 22));
         if (mListener != null) {
             int textColor = mListener.colorIntForItem(finalId);
-            if (textColor <= 0) {
+            if (textColor == -1) {
                 textView.setTextColor(Color.BLACK);
             } else {
                 textView.setTextColor(textColor);

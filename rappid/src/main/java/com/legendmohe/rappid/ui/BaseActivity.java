@@ -2,7 +2,6 @@ package com.legendmohe.rappid.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,7 +30,6 @@ public class BaseActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
             }
 
             if (CommonUtil.isXiaomiRom()) {
@@ -44,11 +42,18 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == android.R.id.home) {
+        if (menuItem.getItemId() == android.R.id.home && !onNavigationBackPressed()) {
             supportFinishAfterTransition();
             return true;
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    /*
+        return true to consume the event.
+     */
+    protected boolean onNavigationBackPressed() {
+        return false;
     }
 
     public void startService(Class<?> paramClass) {
@@ -84,6 +89,14 @@ public class BaseActivity extends AppCompatActivity {
         return sDialogProvider;
     }
 
+    public BaseDialogFragment showLoadingDialog() {
+        if (sDialogProvider != null) {
+            mLoadingDialog = sDialogProvider.createLoadingDialogFragment().show(getSupportFragmentManager());
+            return mLoadingDialog;
+        }
+        return null;
+    }
+
     public BaseDialogFragment showLoadingDialog(String msg) {
         if (sDialogProvider != null) {
             mLoadingDialog = sDialogProvider.createLoadingDialogFragment(msg).show(getSupportFragmentManager());
@@ -115,6 +128,27 @@ public class BaseActivity extends AppCompatActivity {
     public BaseDialogFragment showPromptDialog(String msg) {
         if (sDialogProvider != null) {
             return sDialogProvider.createPromptDialogFragment(msg).show(getSupportFragmentManager());
+        }
+        return null;
+    }
+
+    public BaseDialogFragment showConfirmDialog(String title, String msg, String buttonTitle) {
+        if (sDialogProvider != null) {
+            return sDialogProvider.createConfirmDialogFragment(title, msg, buttonTitle).show(getSupportFragmentManager());
+        }
+        return null;
+    }
+
+    public BaseDialogFragment showConfirmDialog(String title, String msg) {
+        if (sDialogProvider != null) {
+            return sDialogProvider.createConfirmDialogFragment(title, msg).show(getSupportFragmentManager());
+        }
+        return null;
+    }
+
+    public BaseDialogFragment showConfirmDialog(String msg) {
+        if (sDialogProvider != null) {
+            return sDialogProvider.createConfirmDialogFragment(msg).show(getSupportFragmentManager());
         }
         return null;
     }
