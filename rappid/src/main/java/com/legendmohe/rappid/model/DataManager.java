@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.legendmohe.rappid.ui.BaseRecyclerViewAdapter;
 import com.legendmohe.rappid.util.CommonUtil;
 
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ public abstract class DataManager<K, V> {
     private ConcurrentHashMap<K, V> mDataMap = new ConcurrentHashMap<>();
 
     private DataObservable<V> mDataObservable = new DataObservableImpl<>();
-
-    private List<BaseRecyclerViewAdapter> mBindedAdapters = new ArrayList<>();
 
     public void init(Context context) {
         if (Looper.myLooper() != Looper.getMainLooper())
@@ -71,7 +68,6 @@ public abstract class DataManager<K, V> {
 
     public void addItem(V item) {
         mDataMap.put(getIdFromItem(item), item);
-        notiBindedAdapterItemAdded(item);
 
         if (mNotifyThreadHandler != null) {
             Message msg = Message.obtain();
@@ -107,7 +103,6 @@ public abstract class DataManager<K, V> {
                 mNotifyThreadHandler.sendMessage(msg);
             }
         }
-        notiBindedAdapterItemsAdded(items);
     }
 
     public void removeItem(V item) {
@@ -120,7 +115,6 @@ public abstract class DataManager<K, V> {
         V item = mDataMap.get(itemId);
         if (item != null) {
             mDataMap.remove(itemId);
-            notiBindedAdapterItemRemove(item);
 
             if (mNotifyThreadHandler != null) {
                 Message msg = Message.obtain();
@@ -151,7 +145,6 @@ public abstract class DataManager<K, V> {
                 }
             }
         }
-        notiBindedAdapterItemsRemove(items);
     }
 
     public void clear() {
@@ -171,7 +164,6 @@ public abstract class DataManager<K, V> {
                 }
             }
         }
-        notiBindedAdapterItemsClear(items);
     }
 
     public void updateItem(V item) {
@@ -180,7 +172,6 @@ public abstract class DataManager<K, V> {
 
     public void updateItem(K itemId, V item) {
         mDataMap.put(itemId, item);
-        notiBindedAdapterItemUpdate(item);
 
         if (mNotifyThreadHandler != null) {
             Message msg = Message.obtain();
@@ -212,52 +203,6 @@ public abstract class DataManager<K, V> {
 
     public void unregisterDataObserver(DataObserver<V> observer) {
         mDataObservable.unregister(observer);
-    }
-
-    public void bindAdapter(BaseRecyclerViewAdapter adapter) {
-        if (!mBindedAdapters.contains(adapter)) {
-            mBindedAdapters.add(adapter);
-        }
-    }
-
-    public void unbindAdapter(BaseRecyclerViewAdapter adapter) {
-        mBindedAdapters.remove(adapter);
-    }
-
-    private void notiBindedAdapterItemUpdate(final V item) {
-        for (BaseRecyclerViewAdapter adapter : mBindedAdapters) {
-            adapter.replaceItem(item);
-        }
-    }
-
-    private void notiBindedAdapterItemAdded(final V item) {
-        for (BaseRecyclerViewAdapter adapter : mBindedAdapters) {
-            adapter.addItem(item);
-        }
-    }
-
-    private void notiBindedAdapterItemRemove(final V item) {
-        for (BaseRecyclerViewAdapter adapter : mBindedAdapters) {
-            adapter.removeItem(item);
-        }
-    }
-
-    private void notiBindedAdapterItemsAdded(final Collection items) {
-        for (BaseRecyclerViewAdapter adapter : mBindedAdapters) {
-            adapter.addItems(items);
-        }
-    }
-
-    private void notiBindedAdapterItemsRemove(final Collection items) {
-        for (BaseRecyclerViewAdapter adapter : mBindedAdapters) {
-            adapter.removeItems(items);
-        }
-    }
-
-    private void notiBindedAdapterItemsClear(final Collection<V> items) {
-        for (BaseRecyclerViewAdapter adapter : mBindedAdapters) {
-            adapter.removeItems(items);
-        }
     }
 
     public void postRunnableInNotificationThread(Runnable runnable) {

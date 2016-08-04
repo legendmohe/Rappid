@@ -43,7 +43,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home && !onNavigationBackPressed()) {
-            supportFinishAfterTransition();
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(menuItem);
@@ -75,6 +75,23 @@ public class BaseActivity extends AppCompatActivity {
         Intent localIntent = new Intent(this, activityClass);
         localIntent.putExtras(data);
         startActivity(localIntent);
+    }
+
+    public void startActivityForResult(Class<?> activityClass, int requestCode) {
+        Intent dataIntent = new Intent(this, activityClass);
+        startActivityForResult(dataIntent, requestCode);
+    }
+
+    public void startActivityForResult(Class<?> activityClass, int requestCode, Bundle data) {
+        Intent dataIntent = new Intent(this, activityClass);
+        dataIntent.putExtras(data);
+        startActivityForResult(dataIntent, requestCode);
+    }
+
+    public void setResult(int code, Bundle data) {
+        Intent dataIntent = new Intent();
+        dataIntent.putExtras(data);
+        setResult(code, dataIntent);
     }
 
     public Context getContext() {
@@ -153,19 +170,23 @@ public class BaseActivity extends AppCompatActivity {
         return null;
     }
 
-    public void showShortToast(String msg) {
+    public void showShortToast(String msg, int duration) {
         if (sDialogProvider != null) {
             View view = sDialogProvider.createToastView(this, msg);
             if (view == null) {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), msg, duration).show();
             } else {
                 Toast toast = new Toast(getApplicationContext());
                 toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 0);
-                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.setDuration(duration);
                 toast.setView(view);
                 toast.show();
             }
         }
+    }
+
+    public void showShortToast(String msg) {
+        showShortToast(msg, Toast.LENGTH_SHORT);
     }
 
     public void runAfterCreated(Runnable runnable) {

@@ -25,6 +25,9 @@ import java.util.regex.Pattern;
  * Created by legendmohe on 16/3/29.
  */
 public class CommonUtil {
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
     public static <T> boolean isEmpty(T[] t) {
         return !(t != null && t.length != 0);
     }
@@ -41,16 +44,8 @@ public class CommonUtil {
         if (email.length() > 30) {
             return false;
         }
-        boolean flag = false;
-        try {
-            String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-            Pattern regex = Pattern.compile(check);
-            Matcher matcher = regex.matcher(email);
-            flag = matcher.matches();
-        } catch (Exception e) {
-            flag = false;
-        }
-        return flag;
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+        return matcher.find();
     }
 
     public static boolean validatePhoneNumber(String number) {

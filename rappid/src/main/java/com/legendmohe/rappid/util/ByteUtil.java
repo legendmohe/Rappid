@@ -145,4 +145,8 @@ public class ByteUtil {
         value = (((src[0] & 0xFF) << 24) | ((src[1] & 0xFF) << 16) | ((src[2] & 0xFF) << 8) | (src[3] & 0xFF));
         return value;
     }
+
+    public static byte[] emptyByteArray() {
+        return new byte[]{};
+    }
 }

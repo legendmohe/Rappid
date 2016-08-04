@@ -16,6 +16,11 @@ public class BufferReader {
     private int mIndex;
     private byte[] mBuf;
 
+    public BufferReader(byte[] bys) {
+        mBuf = bys;
+        this.mIndex = 0;
+    }
+
     public BufferReader(byte[] bys, int offset) {
         mBuf = bys;
         this.mIndex = offset;
