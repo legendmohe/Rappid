@@ -1,4 +1,4 @@
-package com.legendmohe.rappid;
+package com.legendmohe.rappidDemo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
